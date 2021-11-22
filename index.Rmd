@@ -1,0 +1,20 @@
+--- 
+title: "Dockerによる作業環境構築"
+author: "Juan Martínez"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib]
+cover-image: images/docker_desktop.jpg
+description: |
+  This document covers some additional topics regarding the use of Docker for
+  producing computationally reproducible empirical research in Economics.
+link-citations: yes
+github-repo: rstudio/bookdown-demo
+---
+
+# このサイトについて {-}
+
+これは経済セミナー１２・１月号の「Dockerによる作業環境構築」のサポートページである。紙幅の関係で掲載できなかった情報や、本誌掲載内容を実践する際に役立つ補足情報などを掲載する。
+
+本誌掲載内容を含め、実証研究におけるDockerの使い方に関わる情報をご紹介するものであり、その他の用途や機能についての情報などが必要な場合 [公式ガイド](https://docs.docker.jp/index.html)を参考にされたい。

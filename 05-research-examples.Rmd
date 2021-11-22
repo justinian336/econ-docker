@@ -1,0 +1,23 @@
+# 実証研究での実用例
+
+このセクションではDockerを用いた経済学の実証研究の事例を紹介する。
+
+Daniel L. Chen, John J. Horton (2016) Research Note—Are Online Labor Markets Spot Markets for Tasks? A Field Experiment on the Behavioral Response to Wage Cuts. Information Systems Research 27(2):403-423.
+
+- **リンク**：http://john-joseph-horton.com/papers/wages_of_paycuts.pdf
+  
+- **リポジトリ**：https://github.com/johnjosephhorton/wages_of_paycuts
+
+- **ベースイメージ**：ubuntu:latest
+
+- **言語**：Python、R
+
+McDermott, G.R. Skeptic priors and climate consensus. Climatic Change 166, 7 (2021).
+
+- **リンク**：https://link.springer.com/article/10.1007/s10584-021-03089-x
+
+- **リポジトリ**：https://github.com/grantmcdermott/skeptic-priors
+
+- **ベースイメージ**：rocker/r-ver:4.0.2s
+
+- **言語**：Julia、Python、R

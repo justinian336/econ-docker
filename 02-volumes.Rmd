@@ -1,0 +1,25 @@
+# Docker Volumes
+
+Docker containerの中で作成されるファイルは、コンテナを破棄した時に削除されるが、論文執筆や発表準備のために結果を保存したい時もある。その場合には、コンテナの中で作成された一部のファイルを、コンテナ外の環境とつながっているフォルダーに保存することで、コンテナ破棄後もそのファイルを残すことができる。このセクションではその「コンテナ外と繋がったフォルダー」の作り方を紹介する。
+
+自分のパソコンに次のようなフォルダー構造があるとしよう：
+
+```
+.
+├── my-project
+│   ├── Dockerfile
+│   ├── analyze_data.py
+│   └── clean_data.py
+└── results
+    └── figure_1.png
+```
+自分の`/home/`フォルダーに **my-project**と**results**という二つのフォルダーがある。Dockerfileは`my-project`の中にあるため、そのフォルダーの中から`docker build --tag my-research-image`を実行しても **results**の内容がDocker Imageの中にコピーされない。コンテナの中で得られたデータ分析の結果を**results**に保存したい場合はそのフォルダーとコンテナ内のフォルダーとの橋を作る必要がある。そのためには`docker run`の`-v`オプションを用いる。この例では：
+```
+docker run -v /home/results:/home/rstudio/results my-research-image
+```
+というコマンドを使えばDocker volumeを作成することができる。この例ではそのvolumeはコンテナ外の`/home/results`というフォルダーを、コンテナ内にある`/home/rstudio/results`と繋いでいる。パソコンの `/home/results`フォルダーに保存されたファイルには、コンテナ内の`/home/rstudio/results`からアクセスできる。逆に、コンテナ内でそのロケーションに置かれるファイルには、自分のパソコンの`/home/results`フォルダーからアクセスすることができる。コンテナが破棄されてもvolumeのファイルは削除されない。
+
+
+Docker volumesの使い方は上記の例以外にも複数あるため、volumesの [公式ガイド](https://docs.docker.jp/engine/userguide/dockervolumes.html)を確認しよう。
+
+

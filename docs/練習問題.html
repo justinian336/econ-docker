@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>セクション 4 練習問題 | Dockerによる作業環境構築</title>
+  <meta name="description" content="<p>This document covers some additional topics regarding the use of Docker for
+producing computationally reproducible empirical research in Economics.</p>" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="セクション 4 練習問題 | Dockerによる作業環境構築" />
+  <meta property="og:type" content="book" />
+  
+  <meta property="og:image" content="/images/docker_desktop.jpg" />
+  <meta property="og:description" content="<p>This document covers some additional topics regarding the use of Docker for
+producing computationally reproducible empirical research in Economics.</p>" />
+  <meta name="github-repo" content="rstudio/bookdown-demo" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="セクション 4 練習問題 | Dockerによる作業環境構築" />
+  
+  <meta name="twitter:description" content="<p>This document covers some additional topics regarding the use of Docker for
+producing computationally reproducible empirical research in Economics.</p>" />
+  <meta name="twitter:image" content="/images/docker_desktop.jpg" />
+
+<meta name="author" content="Juan Martínez" />
+
+
+<meta name="date" content="2021-11-22" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="docker-compose.html"/>
+<link rel="next" href="実証研究での実用例.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Dockerによる環境構築</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>このサイトについて</a></li>
+<li class="chapter" data-level="1" data-path="dockerを使い始めるには.html"><a href="dockerを使い始めるには.html"><i class="fa fa-check"></i><b>1</b> Dockerを使い始めるには</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="dockerを使い始めるには.html"><a href="dockerを使い始めるには.html#pcにインストールする"><i class="fa fa-check"></i><b>1.1</b> PCにインストールする</a></li>
+<li class="chapter" data-level="1.2" data-path="dockerを使い始めるには.html"><a href="dockerを使い始めるには.html#オンラインでの利用"><i class="fa fa-check"></i><b>1.2</b> オンラインでの利用</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="docker-volumes.html"><a href="docker-volumes.html"><i class="fa fa-check"></i><b>2</b> Docker Volumes</a></li>
+<li class="chapter" data-level="3" data-path="docker-compose.html"><a href="docker-compose.html"><i class="fa fa-check"></i><b>3</b> Docker Compose</a></li>
+<li class="chapter" data-level="4" data-path="練習問題.html"><a href="練習問題.html"><i class="fa fa-check"></i><b>4</b> 練習問題</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="練習問題.html"><a href="練習問題.html#hello-world"><i class="fa fa-check"></i><b>4.1</b> Hello World</a></li>
+<li class="chapter" data-level="4.2" data-path="練習問題.html"><a href="練習問題.html#牛を喋らせる"><i class="fa fa-check"></i><b>4.2</b> 牛を喋らせる</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="実証研究での実用例.html"><a href="実証研究での実用例.html"><i class="fa fa-check"></i><b>5</b> 実証研究での実用例</a></li>
+<li class="chapter" data-level="6" data-path="有料ソフトの利用.html"><a href="有料ソフトの利用.html"><i class="fa fa-check"></i><b>6</b> 有料ソフトの利用</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="有料ソフトの利用.html"><a href="有料ソフトの利用.html#matlab"><i class="fa fa-check"></i><b>6.1</b> Matlab</a></li>
+<li class="chapter" data-level="6.2" data-path="有料ソフトの利用.html"><a href="有料ソフトの利用.html#arcgis-notebook-server"><i class="fa fa-check"></i><b>6.2</b> ArcGIS Notebook Server</a></li>
+<li class="chapter" data-level="6.3" data-path="有料ソフトの利用.html"><a href="有料ソフトの利用.html#stata"><i class="fa fa-check"></i><b>6.3</b> Stata</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Published with bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Dockerによる作業環境構築</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="練習問題" class="section level1" number="4">
+<h1><span class="header-section-number">セクション 4</span> 練習問題</h1>
+<p>初めて使う人にとってDockerはとても難解なものに見えるが、慣れてしまえばその使い方はとても直観的で楽しい。そのためには、小さな練習問題を解くことが効果的である。このセクションでは簡単な練習問題を解きながらDockerの基本を復習できる。Dockerがインストールされている環境を用意する必要がある。まだ用意していない場合はインストール <a href="/dockerを使い始めるには.html">Dockerを使い始めるには</a>を参考に準備してほしい。</p>
+<div id="hello-world" class="section level2" number="4.1">
+<h2><span class="header-section-number">4.1</span> Hello World</h2>
+<p>この練習問題では公式の <a href="https://hub.docker.com/_/hello-world">hello-world</a> Docker Imageを使って、コンテナを立ち上げる。コンテナが起動すると、メッセージが画面にプリントされて自動的に停止する。</p>
+<p><code>docker run</code>を使って<code>hello-world</code> Imageからコンテナを立ち上げてみよう：</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="練習問題.html#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run hello-world</span></code></pre></div>
+</details>
+<p><br/></p>
+<p>コンテナがメインコマンドを実行して自動的に停止しても、この時点ではコンテナがまだ破棄されていない。コンテナのステータスは<code>Exited</code>になっているはずだ。<code>docker ps --all</code>を実行することで全てのコンテナのステータスを確認することができる。この例では、立ち上げの際にコンテナに名前を付与しなかったため、Dockerがランダムに名前を付けてくれた。その名前は<code>docker ps --all</code>コマンドで確認できる。筆者がこの例を作成した際には<strong>gallant_archimedes</strong>という名前が付けられた。</p>
+<p>不要なコンテナは邪魔なので、 <code>docker rm</code>とDockerが付与してくれたコンテナの名前を使って破棄してみよう：</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="練習問題.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> rm gallant_archimedes</span></code></pre></div>
+</details>
+<p><br/></p>
+<p>もう一度<code>hello-world</code>からコンテナを立ち上げる。今回は<strong>my-container</strong>という名前を付けてみよう：</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="練習問題.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--name</span> my-container hello-world</span></code></pre></div>
+</details>
+<p><br/></p>
+<p>コンテナが停止したら<code>docker ps --all</code>を使って、<strong>my-container</strong>というコンテナがあることを確認できる。　確認できたら<code>docker rm my-container</code>を使って破棄しよう。</p>
+<p>毎回コンテナを破棄するならば、停止とともに自動的に破棄されるようにしたほうが効率がいい。もう一度コンテナを立ち上げてみよう。今回は <code>rm</code>オプションを使う。確認しやすくするために、<strong>my-container</strong>という名前を付けておこう。</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb8"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb8-1"><a href="練習問題.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--name</span> my-container <span class="at">--rm</span> hello-world</span></code></pre></div>
+</details>
+<p><br/></p>
+<p>コンテナが停止したら<code>docker ps --all</code>を使って、<strong>my-container</strong>というコンテナがないことを確認してみてほしい。コンテナが破棄されていれば見つからないはずだ。</p>
+<p>全部上手くいっただろうか？お疲れ様！ 🍵</p>
+</div>
+<div id="牛を喋らせる" class="section level2" number="4.2">
+<h2><span class="header-section-number">4.2</span> 牛を喋らせる</h2>
+<p>Dockerfileを使ってDocker Imageをビルドしてみよう。
+まずフォルダーを作成し、その中にDockerfileというファイルを作成する。ファイルの内容は下記のようにしてみよう：</p>
+<pre><code>FROM rancher/cowsay</code></pre>
+<p>このファイルから作成されるDocker Imageは <a href="https://hub.docker.com/r/rancher/cowsay">cowsay</a>の公式イメージをベースにしている。 <code>cowsay</code>はコマンドラインの使い方を学習するためによく使われているLinuxのプログラムである。この練習問題ではDockerfileを編集して、牛を喋らせていく。</p>
+<p>同じフォルダーから<code>docker build</code>を使ってDocker Imageをビルドしよう。イメージの名前を<strong>my-cow:v1</strong>にしよう。</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb10"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb10-1"><a href="練習問題.html#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--tag</span> my-cow:v1 .</span></code></pre></div>
+</details>
+<p><br/></p>
+<p>初めて<strong>rancher/cowsay</strong>イメージを使う際には、Docker Hubから自動的にダウンロードされる。ビルドが無事に終わったら<code>docker images</code>というコマンドを実行して、レポジトリ名 <strong>my-cow</strong>、tag <strong>v1</strong>というイメージがあることを確認しよう。
+そのイメージからコンテナを立ち上げよう：</p>
+<pre><code>docker run --rm my-cow:v1 moo</code></pre>
+<p>下記のような牛が表示されるはずだ。</p>
+<pre><code> _____
+&lt; moo &gt;
+ -----
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+</code></pre>
+<p>実行したコマンドにある<strong>moo</strong>はDocker Imageの<em>Entrypoint</em>（入口）に渡される引数である。その<em>Entrypoint</em>はDockerfileで設定できる。</p>
+<p><code>cowsay</code>というプログラムの使い方を説明しよう。例えば <code>cowsay "hello world"</code>を実行すると、牛が <strong>hello world</strong>と喋る。つまり、<code>hello world</code>は<code>cowsay</code>に渡される引数である。先ほど作ったイメージの<em>Entrypoint</em>は <a href="https://github.com/rancher/cowsay/blob/1be4733e041a3fc2616fc39812a9ff9b63036130/Dockerfile#L11">cowsay</a>というコマンドなので、<code>docker run</code>コマンドのDocker Imageの次に<code>moo</code>と書いて実行することは、コンテナ内で<code>cowsay moo</code>を実行するのと同じである。</p>
+<p>ベースのDocker Imageの<em>Entrypoint</em>を上書きするために、自分の作成したDockerfileに定義する必要がある。</p>
+<p>先ほど作成したDockerfileを編集して、牛がデフォルトで<strong>経済セミナーはすごい！</strong>と喋る
+ようにしよう。</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb13"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb13-1"><a href="練習問題.html#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> rancher/cowsay </span>
+<span id="cb13-2"><a href="練習問題.html#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ENTRYPOINT</span> cowsay <span class="st">&quot;経済セミナーはすごい！&quot;</span></span></code></pre></div>
+</details>
+<p><br/></p>
+<p><code>my-cow:v2</code>と名付けしてイメージをビルドする。</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb14"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb14-1"><a href="練習問題.html#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="ex">docker</span> build <span class="at">--tag</span> my-cow:v2 .</span></code></pre></div>
+</details>
+<p><br/></p>
+<p>コンテナを立ち上げてみよう：</p>
+<pre><code>docker run --rm my-cow:v2</code></pre>
+<p>Dockerfileが正しければ牛は次のように喋る：</p>
+<pre><code> ___________________________________
+&lt; 経済セミナーはすごい！ &gt;
+ -----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||</code></pre>
+<p>素晴らしいメッセージだが、毎回実行するたびに同じメッセージが表示されるのはつまらないかもしれない。
+ファイルに複数のメッセージを書き込んで、そこから牛がランダムに台詞を選ぶようにしてみよう！</p>
+<p>まず、<strong>dadjokes</strong>というファイルを作成する、内容は牛の台詞である。：</p>
+<pre><code>マイケル・ジョーダンの冗談はまぁいける冗談
+そのメロン、食べるのやめろん
+朝食食べて超ショック！
+車が来るまで待とう
+パジャマを着ているパパ、邪魔だ
+ライスだけでは、辛いっす！
+係長になるまで、まだまだ時間がかかりちょー
+下手なシャレは、辞めなしゃれ
+ソーダは美味しそーだ
+都会から来たって、「ホントかい？」</code></pre>
+<p><a href="https://www.eternalcollegest.com/entry/oyaji-gag">このサイト</a>からとてもレベルの高いおやじギャグを選んでみた。</p>
+<p><strong>dadjokes</strong>ファイルをDocker Imageの中に追加するように、Dockerfileを編集してみる。</p>
+<details>
+<summary>
+<strong>回答はこちら</strong>
+</summary>
+<div class="sourceCode" id="cb18"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb18-1"><a href="練習問題.html#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="ex">FROM</span> rancher/cowsay </span>
+<span id="cb18-2"><a href="練習問題.html#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="ex">ADD</span> ./dadjokes dadjokes</span>
+<span id="cb18-3"><a href="練習問題.html#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="ex">ENTRYPOINT</span> cowsay <span class="st">&quot;経済セミナーはすごい！&quot;</span></span></code></pre></div>
+</details>
+<p><br/></p>
+<p><code>ADD</code>コマンドはDockerfileと同じフォルダーにある<strong>dadjokes</strong>というファイルをコピーして、Imageの中に <strong>dadjokes</strong>という名前で保存する。</p>
+<p>次に、ファイルから１つの台詞がランダムに選択されて、その内容が<code>cowsay</code>に渡されるようにしよう。<em>Entrypoint</em>を下記のように書き換える：</p>
+<blockquote>
+<p>ENTRYPOINT shuf -n 1 dadjokes | cowsay</p>
+</blockquote>
+<p>簡単にコマンドを解釈すると、<code>shuf -n 1 dadjokes</code>は <strong>dadjokes</strong>ファイルからランダムに１行を選択する。<code>|</code>はその結果を次のコマンド（この場合は<code>cowsay</code>）に渡す。</p>
+<p>つまり、Dockerfileは下記のようになる：</p>
+<pre><code>FROM rancher/cowsay
+ADD ./dadjokes dadjokes
+ENTRYPOINT shuf -n 1 dadjokes | cowsay</code></pre>
+<p><strong>my-cow:v3</strong>と名付けしてイメージをビルドする：</p>
+<pre><code>docker build --tag my-cow:v3 .</code></pre>
+<p>では、コンテナを立ち上げてみよう：</p>
+<pre><code>docker run --rm my-cow:v3</code></pre>
+<p>全てが正しければ、牛は次のようにレベルの高いおやじギャグを喋るだろう：</p>
+<pre><code> ___________________________________
+&lt; 朝食食べて超ショック！ &gt;
+ -----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||</code></pre>
+<p>これでDockerfileの書き方の基本を練習できた。Dockerfileの <a href="https://docs.docker.jp/engine/reference/builder.html">公式ガイド</a>はとても充実しているので、より詳しく知りたい人は参考にしてほしい。　🐮</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="docker-compose.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="実証研究での実用例.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "night",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

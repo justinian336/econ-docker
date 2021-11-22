@@ -1,0 +1,191 @@
+# 練習問題
+
+```{r echo=FALSE}
+print_solution <- function(solution){
+  return(
+    glue::glue("
+    <details>
+    <summary>**回答はこちら**</summary>
+    
+    \`\`\`bash
+    {solution}
+    \`\`\`
+    
+    </details>
+    <br/>
+    ")
+  )
+}
+```
+
+初めて使う人にとってDockerはとても難解なものに見えるが、慣れてしまえばその使い方はとても直観的で楽しい。そのためには、小さな練習問題を解くことが効果的である。このセクションでは簡単な練習問題を解きながらDockerの基本を復習できる。Dockerがインストールされている環境を用意する必要がある。まだ用意していない場合はインストール [Dockerを使い始めるには](/dockerを使い始めるには.html)を参考に準備してほしい。
+
+## Hello World
+この練習問題では公式の [hello-world](https://hub.docker.com/_/hello-world) Docker Imageを使って、コンテナを立ち上げる。コンテナが起動すると、メッセージが画面にプリントされて自動的に停止する。
+
+`docker run`を使って`hello-world` Imageからコンテナを立ち上げてみよう：
+
+`r print_solution('docker run hello-world')`
+
+コンテナがメインコマンドを実行して自動的に停止しても、この時点ではコンテナがまだ破棄されていない。コンテナのステータスは`Exited`になっているはずだ。`docker ps --all`を実行することで全てのコンテナのステータスを確認することができる。この例では、立ち上げの際にコンテナに名前を付与しなかったため、Dockerがランダムに名前を付けてくれた。その名前は`docker ps --all`コマンドで確認できる。筆者がこの例を作成した際には**gallant_archimedes**という名前が付けられた。
+
+不要なコンテナは邪魔なので、 `docker rm`とDockerが付与してくれたコンテナの名前を使って破棄してみよう：
+
+`r print_solution('docker rm gallant_archimedes')`
+
+もう一度`hello-world`からコンテナを立ち上げる。今回は**my-container**という名前を付けてみよう：
+
+`r print_solution('docker run --name my-container hello-world')`
+
+コンテナが停止したら`docker ps --all`を使って、**my-container**というコンテナがあることを確認できる。　確認できたら`docker rm my-container`を使って破棄しよう。
+
+
+毎回コンテナを破棄するならば、停止とともに自動的に破棄されるようにしたほうが効率がいい。もう一度コンテナを立ち上げてみよう。今回は `rm`オプションを使う。確認しやすくするために、**my-container**という名前を付けておこう。
+
+`r print_solution('docker run --name my-container --rm hello-world')`
+
+コンテナが停止したら`docker ps --all`を使って、**my-container**というコンテナがないことを確認してみてほしい。コンテナが破棄されていれば見つからないはずだ。
+
+全部上手くいっただろうか？お疲れ様！ `r emojifont::emoji('tea')`
+
+## 牛を喋らせる
+Dockerfileを使ってDocker Imageをビルドしてみよう。
+まずフォルダーを作成し、その中にDockerfileというファイルを作成する。ファイルの内容は下記のようにしてみよう：
+```
+FROM rancher/cowsay
+```
+このファイルから作成されるDocker Imageは [cowsay](https://hub.docker.com/r/rancher/cowsay)の公式イメージをベースにしている。 `cowsay`はコマンドラインの使い方を学習するためによく使われているLinuxのプログラムである。この練習問題ではDockerfileを編集して、牛を喋らせていく。
+
+同じフォルダーから`docker build`を使ってDocker Imageをビルドしよう。イメージの名前を**my-cow:v1**にしよう。
+
+`r print_solution('docker build --tag my-cow:v1 .')`
+
+初めて**rancher/cowsay**イメージを使う際には、Docker Hubから自動的にダウンロードされる。ビルドが無事に終わったら`docker images`というコマンドを実行して、レポジトリ名 **my-cow**、tag **v1**というイメージがあることを確認しよう。
+そのイメージからコンテナを立ち上げよう：
+```
+docker run --rm my-cow:v1 moo
+```
+下記のような牛が表示されるはずだ。
+
+```
+ _____
+< moo >
+ -----
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+
+```
+実行したコマンドにある**moo**はDocker Imageの*Entrypoint*（入口）に渡される引数である。その*Entrypoint*はDockerfileで設定できる。
+
+`cowsay`というプログラムの使い方を説明しよう。例えば `cowsay "hello world"`を実行すると、牛が **hello world**と喋る。つまり、`hello world`は`cowsay`に渡される引数である。先ほど作ったイメージの*Entrypoint*は [cowsay](https://github.com/rancher/cowsay/blob/1be4733e041a3fc2616fc39812a9ff9b63036130/Dockerfile#L11)というコマンドなので、`docker run`コマンドのDocker Imageの次に`moo`と書いて実行することは、コンテナ内で`cowsay moo`を実行するのと同じである。
+
+ベースのDocker Imageの*Entrypoint*を上書きするために、自分の作成したDockerfileに定義する必要がある。
+
+先ほど作成したDockerfileを編集して、牛がデフォルトで**経済セミナーはすごい！**と喋る
+ようにしよう。
+
+```{r echo=FALSE}
+cowsay_2_solution <- print_solution('FROM rancher/cowsay 
+ENTRYPOINT cowsay "経済セミナーはすごい！"'
+)
+```
+
+`r cowsay_2_solution`
+
+`my-cow:v2`と名付けしてイメージをビルドする。
+
+`r print_solution('docker build --tag my-cow:v2 .')`
+
+コンテナを立ち上げてみよう：
+
+```
+docker run --rm my-cow:v2
+```
+
+Dockerfileが正しければ牛は次のように喋る：
+```
+ ___________________________________
+< 経済セミナーはすごい！ >
+ -----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+
+素晴らしいメッセージだが、毎回実行するたびに同じメッセージが表示されるのはつまらないかもしれない。
+ファイルに複数のメッセージを書き込んで、そこから牛がランダムに台詞を選ぶようにしてみよう！
+
+まず、**dadjokes**というファイルを作成する、内容は牛の台詞である。：
+
+```
+マイケル・ジョーダンの冗談はまぁいける冗談
+そのメロン、食べるのやめろん
+朝食食べて超ショック！
+車が来るまで待とう
+パジャマを着ているパパ、邪魔だ
+ライスだけでは、辛いっす！
+係長になるまで、まだまだ時間がかかりちょー
+下手なシャレは、辞めなしゃれ
+ソーダは美味しそーだ
+都会から来たって、「ホントかい？」
+```
+[このサイト](https://www.eternalcollegest.com/entry/oyaji-gag)からとてもレベルの高いおやじギャグを選んでみた。
+
+**dadjokes**ファイルをDocker Imageの中に追加するように、Dockerfileを編集してみる。
+
+```{r echo=FALSE}
+cowsay_3_solution <- print_solution('FROM rancher/cowsay 
+ADD ./dadjokes dadjokes
+ENTRYPOINT cowsay "経済セミナーはすごい！"'
+)
+```
+
+`r cowsay_3_solution`
+
+`ADD`コマンドはDockerfileと同じフォルダーにある**dadjokes**というファイルをコピーして、Imageの中に **dadjokes**という名前で保存する。
+
+次に、ファイルから１つの台詞がランダムに選択されて、その内容が`cowsay`に渡されるようにしよう。*Entrypoint*を下記のように書き換える：
+
+>ENTRYPOINT shuf -n 1 dadjokes | cowsay
+
+簡単にコマンドを解釈すると、`shuf -n 1 dadjokes`は **dadjokes**ファイルからランダムに１行を選択する。`|`はその結果を次のコマンド（この場合は`cowsay`）に渡す。
+
+つまり、Dockerfileは下記のようになる：
+
+```
+FROM rancher/cowsay
+ADD ./dadjokes dadjokes
+ENTRYPOINT shuf -n 1 dadjokes | cowsay
+```
+
+**my-cow:v3**と名付けしてイメージをビルドする：
+
+```
+docker build --tag my-cow:v3 .
+```
+
+では、コンテナを立ち上げてみよう：
+
+```
+docker run --rm my-cow:v3
+```
+
+全てが正しければ、牛は次のようにレベルの高いおやじギャグを喋るだろう：
+
+```
+ ___________________________________
+< 朝食食べて超ショック！ >
+ -----------------------------------
+        \   ^__^
+         \  (oo)\_______
+            (__)\       )\/\
+                ||----w |
+                ||     ||
+```
+
+これでDockerfileの書き方の基本を練習できた。Dockerfileの [公式ガイド](https://docs.docker.jp/engine/reference/builder.html)はとても充実しているので、より詳しく知りたい人は参考にしてほしい。　`r emojifont::emoji('cow')`

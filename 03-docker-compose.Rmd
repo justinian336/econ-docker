@@ -1,0 +1,46 @@
+# Docker Compose
+
+Docker Composeは複数のコンテナで構成される作業環境を管理するツールである。また、作業環境の設定を1つのファイルにまとめたい時にも使われる。このセクションではデータ分析のためのDocker Composeの使い方を紹介する。より詳しい情報が必要な場合は [公式ガイド](https://docs.docker.com/compose/)を確認されたい。
+
+まず、Docker ComposeはDockerのコマンドラインインターフェースとは異なるツールなので、Dockerがインストールされているパソコンであっても、必ずDocker Composeがインストールされているとは限らない。ただし、Docker Desktop for Windows、またはMacOSでDockerをインストールした場合には、Composeは一緒にインストールされている。
+
+下記のフォルダー構造の場合で考えてみよう：
+
+```
+.
+├── data_analysis
+│   ├── Dockerfile
+│   ├── analyze_data.py
+├── data_processing
+│   ├── Dockerfile
+│   ├── process_data.py
+└── docker-compose.yaml
+```
+データクリーニングやデータ分析はそれぞれ独立したタスクであるため、それぞれのDocker ImageやそのDockerfileがあり、必要な設定（volume、環境変数、portsなど）も異なる。
+これらのコンテナの設定は`docker-compose.yaml`というファイルにまとめられている。その内容は以下の通りである。：
+```
+version: "3"
+services:
+  data_processing:
+    build:
+      context: .
+      dockerfile: ./data_processing/Dockerfile
+    volumes:
+      - /home/users/me/data/:/data/
+
+  data_analysis:
+    build:
+      context: .
+      dockerfile: ./data_analysis/Dockerfile
+    ports:
+      - 8787:8787
+    environment:
+      - NUM_CORES: ${MY_NUM_CORES}
+    volumes:
+      - /home/users/me/data/:/data/
+```
+このファイルでは二つのサービスが定義されている：**data_processing**と**data_analysis**。それぞれのサービスの定義の中には *build*, *ports*, *volumes*, *environment*といったサブセクションがあり、その中で必要なDockerfileへのパス、volumeの設定、アクセスに必要なポート、コンテナ内のプログラムがアクセスしてほしい環境変数を定義している。これらの定義は `docker run`でコンテナを立ち上げる際にも設定できるが、その場合コマンドが非常に長くなってしまう。そのため、必要なオプションを設定し忘れたり、書き間違えたりするミスが起きやすい。Docker Composeを使えばコンテナの起動はより簡単になる。
+
+例えば、`data_analysis`というサービスのみを立ち上げたいときは `docker-compose up data_analysis`を実行する。作業が終わって、サービスを停止したい場合は `docker-compose stop data_analysis`で簡単にできる。さらに、`docker-compose down`を使えばこの**docker-compose.yaml**ファイルで定義されている全てのサービスが破棄される。
+
+単純に`docker-compose up`を実行すると全ての定義されたサービスが同時に立ち上がる。上記の例では、同時に立ち上げる必要はない（データクリーニングとデータ分析を同時に行うことはないだろう）が、同時に立ち上げる必要がある作業もある。例えば、テキストデータや地理情報を分析する場合には、それぞれのデータ構造に適したデータベースが必要になる。そのため、データ分析の作業環境とともにデータベースを同時に立ち上げておく必要があるが、データベースをサービスとして`docker-compose.yaml`に定義することでそのワークフローが可能になる。
